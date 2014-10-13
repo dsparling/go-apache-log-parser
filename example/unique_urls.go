@@ -29,7 +29,10 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, line := range lines {
-		re, _ := regexp.Compile(`([^?=&]+)(=([^&]*))?`)
+		re, err := regexp.Compile(`([^?=&]+)(=([^&]*))?`)
+		if err != nil {
+			log.Fatal(err)
+		}
 		res := re.FindAllStringSubmatch(line.Url, -1)
 		if len(res) > 0 {
 			url := res[0][0]
