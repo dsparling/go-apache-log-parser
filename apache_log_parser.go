@@ -19,11 +19,12 @@ type Line struct {
 	Bytes      int
 	Referer    string
 	UserAgent  string
+	Url        string
 }
 
 func (li *Line) String() string {
 	return fmt.Sprintf(
-		"%s\t%s\t%s\t%d\t%d\t%s\t%s",
+		"%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s",
 		li.RemoteHost,
 		li.Time,
 		li.Request,
@@ -31,6 +32,7 @@ func (li *Line) String() string {
 		li.Bytes,
 		li.Referer,
 		li.UserAgent,
+		li.Url,
 	)
 }
 
@@ -97,15 +99,15 @@ func parse(file string) ([]Line, error) {
 		lineItem.Bytes = bytes
 		lineItem.Referer = result[9]
 		lineItem.UserAgent = result[10]
+		url := result[4]
+		altUrl := result[6]
+		if url == "" && altUrl != "" {
+			url = altUrl
+		}
+		lineItem.Url = url
 		items = append(items, *lineItem)
 		//for k, v := range result {
 		//	fmt.Printf("%d. %s\n", k, v)
-		//}
-		//url := result[4]
-		//protocol := result[5]
-		//altUrl := result[6]
-		//if url == "" && altUrl != "" {
-		//	url = altUrl
 		//}
 	}
 	return items, nil
