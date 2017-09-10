@@ -14,7 +14,7 @@ type TestLine struct {
 	Bytes      int
 	Referer    string
 	UserAgent  string
-	Url        string
+	URL        string
 }
 
 var value = "05/Oct/2014:04:34:35 -0500"
@@ -49,8 +49,8 @@ func TestParse(t *testing.T) {
 		if testLine.UserAgent != line.UserAgent {
 			t.Errorf("user agent [%v]; want [%v]", testLine.UserAgent, line.UserAgent)
 		}
-		if testLine.Url != line.Url {
-			t.Errorf("url [%v]; want [%v]", testLine.Url, line.Url)
+		if testLine.URL != line.URL {
+			t.Errorf("url [%v]; want [%v]", testLine.URL, line.URL)
 		}
 	}
 }

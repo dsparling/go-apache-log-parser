@@ -33,7 +33,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		res := re.FindAllStringSubmatch(line.Url, -1)
+		res := re.FindAllStringSubmatch(line.URL, -1)
 		if len(res) > 0 {
 			url := res[0][0]
 			if skipURL(url) {

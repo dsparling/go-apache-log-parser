@@ -11,7 +11,8 @@ import (
 	"time"
 )
 
-type line struct {
+// Line : Represents a line in standard Apache log
+type Line struct {
 	RemoteHost string
 	Time       time.Time
 	Request    string
@@ -19,10 +20,10 @@ type line struct {
 	Bytes      int
 	Referer    string
 	UserAgent  string
-	Url        string
+	URL        string
 }
 
-func (li *line) String() string {
+func (li *Line) String() string {
 	return fmt.Sprintf(
 		"%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s",
 		li.RemoteHost,
@@ -32,7 +33,7 @@ func (li *line) String() string {
 		li.Bytes,
 		li.Referer,
 		li.UserAgent,
-		li.Url,
+		li.URL,
 	)
 }
 
@@ -51,14 +52,14 @@ func readLines(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func parse(file string) ([]line, error) {
-	var items []line
+func parse(file string) ([]Line, error) {
+	var items []Line
 
 	lines, err := readLines(file)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
-	for _, theLine := range lines {
+	for _, line := range lines {
 		var buffer bytes.Buffer
 		buffer.WriteString(`^(\S+)\s`)                  // 1) IP
 		buffer.WriteString(`\S+\s+`)                    // remote logname
@@ -77,9 +78,9 @@ func parse(file string) ([]line, error) {
 		if err != nil {
 			log.Fatalf("regexp: %s", err)
 		}
-		result := re1.FindStringSubmatch(theLine)
+		result := re1.FindStringSubmatch(line)
 
-		lineItem := new(line)
+		lineItem := new(Line)
 		lineItem.RemoteHost = result[1]
 		// [05/Oct/2014:04:06:21 -0500]
 		value := result[2]
@@ -100,11 +101,11 @@ func parse(file string) ([]line, error) {
 		lineItem.Referer = result[9]
 		lineItem.UserAgent = result[10]
 		url := result[4]
-		altUrl := result[6]
-		if url == "" && altUrl != "" {
-			url = altUrl
+		altURL := result[6]
+		if url == "" && altURL != "" {
+			url = altURL
 		}
-		lineItem.Url = url
+		lineItem.URL = url
 		items = append(items, *lineItem)
 		//for k, v := range result {
 		//	fmt.Printf("%d. %s\n", k, v)
@@ -113,7 +114,8 @@ func parse(file string) ([]line, error) {
 	return items, nil
 }
 
-func Parse(file string) ([]line, error) {
+// Parse : Parse the log file
+func Parse(file string) ([]Line, error) {
 	lines, err := parse(file)
 	if err != nil {
 		return nil, err
