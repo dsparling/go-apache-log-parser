@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type Line struct {
+type line struct {
 	RemoteHost string
 	Time       time.Time
 	Request    string
@@ -22,7 +22,7 @@ type Line struct {
 	Url        string
 }
 
-func (li *Line) String() string {
+func (li *line) String() string {
 	return fmt.Sprintf(
 		"%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s",
 		li.RemoteHost,
@@ -51,14 +51,14 @@ func readLines(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func parse(file string) ([]Line, error) {
-	var items []Line
+func parse(file string) ([]line, error) {
+	var items []line
 
 	lines, err := readLines(file)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
-	for _, line := range lines {
+	for _, theLine := range lines {
 		var buffer bytes.Buffer
 		buffer.WriteString(`^(\S+)\s`)                  // 1) IP
 		buffer.WriteString(`\S+\s+`)                    // remote logname
@@ -77,9 +77,9 @@ func parse(file string) ([]Line, error) {
 		if err != nil {
 			log.Fatalf("regexp: %s", err)
 		}
-		result := re1.FindStringSubmatch(line)
+		result := re1.FindStringSubmatch(theLine)
 
-		lineItem := new(Line)
+		lineItem := new(line)
 		lineItem.RemoteHost = result[1]
 		// [05/Oct/2014:04:06:21 -0500]
 		value := result[2]
@@ -113,7 +113,7 @@ func parse(file string) ([]Line, error) {
 	return items, nil
 }
 
-func Parse(file string) ([]Line, error) {
+func Parse(file string) ([]line, error) {
 	lines, err := parse(file)
 	if err != nil {
 		return nil, err

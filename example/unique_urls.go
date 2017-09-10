@@ -10,17 +10,17 @@ import (
 )
 
 // A data structure to hold a key/value pair.
-type Pair struct {
+type pair struct {
 	Key   string
 	Value int
 }
 
-// A slice of Pairs that implements sort.Interface to sort by Value.
-type PairList []Pair
+// A slice of pairs that implements sort.Interface to sort by Value.
+type pairList []pair
 
-func (p PairList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-func (p PairList) Len() int           { return len(p) }
-func (p PairList) Less(i, j int) bool { return p[i].Value < p[j].Value }
+func (p pairList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p pairList) Len() int           { return len(p) }
+func (p pairList) Less(i, j int) bool { return p[i].Value < p[j].Value }
 
 func main() {
 	uniqueUrls := make(map[string]int)
@@ -36,7 +36,7 @@ func main() {
 		res := re.FindAllStringSubmatch(line.Url, -1)
 		if len(res) > 0 {
 			url := res[0][0]
-			if skipUrl(url) {
+			if skipURL(url) {
 				continue
 			}
 			uniqueUrls[url]++
@@ -64,20 +64,20 @@ func main() {
 	}
 }
 
-// A function to turn a map into a PairList, then sort and return it.
+// A function to turn a map into a pairList, then sort and return it.
 // Andrew Gerrand: https://groups.google.com/d/msg/golang-nuts/FT7cjmcL7gw/Gj4_aEsE_IsJ
-func sortMapByValue(m map[string]int) PairList {
-	p := make(PairList, len(m))
+func sortMapByValue(m map[string]int) pairList {
+	p := make(pairList, len(m))
 	i := 0
 	for k, v := range m {
-		p[i] = Pair{k, v}
+		p[i] = pair{k, v}
 		i++
 	}
 	sort.Sort(p)
 	return p
 }
 
-func skipUrl(url string) bool {
+func skipURL(url string) bool {
 	// Do any filtering you need here
 	if strings.HasSuffix(url, ".js") ||
 		strings.HasSuffix(url, ".css") ||
@@ -93,7 +93,6 @@ func skipUrl(url string) bool {
 		strings.HasSuffix(url, ".jpg") ||
 		strings.HasSuffix(url, ".ico") {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
